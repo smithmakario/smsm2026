@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Cohort;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -29,6 +32,13 @@ class User extends Authenticatable
         'phone',
         'user_type',
         'password',
+        'marital_status',
+        'occupation',
+        'occupation_category',
+        'church',
+        'country',
+        'state',
+        'city',
     ];
 
     /**
@@ -72,5 +82,34 @@ class User extends Authenticatable
     public function isMentee(): bool
     {
         return $this->user_type === self::TYPE_MENTEE;
+    }
+
+    /**
+     * Get the dashboard route name for this user type.
+     */
+    public function dashboardRoute(): string
+    {
+        return match ($this->user_type) {
+            self::TYPE_ADMIN => 'admin.index',
+            self::TYPE_MENTOR => 'mentor.index',
+            self::TYPE_MENTEE => 'mentee.index',
+            default => 'admin.index',
+        };
+    }
+
+    public function cohorts(): BelongsToMany
+    {
+        return $this->belongsToMany(Cohort::class, 'cohort_user')
+            ->withTimestamps();
+    }
+
+    public function cohort(): ?Cohort
+    {
+        return $this->cohorts()->first();
+    }
+
+    public function mentoredCohorts(): HasMany
+    {
+        return $this->hasMany(Cohort::class, 'mentor_id');
     }
 }

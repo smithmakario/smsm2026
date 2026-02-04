@@ -23,13 +23,7 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
                 if ($user instanceof User) {
-                    $route = match ($user->user_type) {
-                        User::TYPE_ADMIN => 'admin.index',
-                        User::TYPE_MENTOR => 'mentor.index',
-                        User::TYPE_MENTEE => 'mentee.index',
-                        default => 'admin.index',
-                    };
-                    return redirect()->route($route);
+                    return redirect()->route($user->dashboardRoute());
                 }
                 return redirect(url('/'));
             }

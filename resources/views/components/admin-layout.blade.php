@@ -60,9 +60,7 @@
             <div class="p-6 flex flex-col h-full justify-between">
                 <div class="flex flex-col gap-8">
                     <div class="flex items-center gap-3">
-                        <div class="bg-primary rounded-lg p-2 text-white">
-                            <span class="material-symbols-outlined text-2xl">monitoring</span>
-                        </div>
+                        <img src="{{ asset('images/sotm-logo.png') }}" alt="SOTM" class="h-9 w-auto object-contain" />
                         <div class="flex flex-col">
                             <h1 class="text-base font-bold leading-none">Admin Panel</h1>
                             <p class="text-slate-500 dark:text-[#93adc8] text-xs mt-1">LMS Management</p>
@@ -76,14 +74,14 @@
                             <span class="text-sm font-medium">Dashboard</span>
                         </a>
                         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#1a2632] transition-colors"
-                            href="{{ route('admin.cohorts') }}">
+                            href="{{ route('admin.cohorts.index') }}">
                             <span class="material-symbols-outlined">groups</span>
                             <span class="text-sm font-medium">Cohorts</span>
                         </a>
                         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#1a2632] transition-colors"
-                            href="{{ route('admin.rbac') }}">
-                            <span class="material-symbols-outlined">admin_panel_settings</span>
-                            <span class="text-sm font-medium">RBAC</span>
+                            href="{{ route('admin.users.index') }}">
+                            <span class="material-symbols-outlined">group</span>
+                            <span class="text-sm font-medium">Users</span>
                         </a>
                         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#1a2632] transition-colors"
                             href="{{ route('admin.logs') }}">
@@ -113,6 +111,7 @@
                             <span class="truncate">Sign Out</span>
                         </button>
                     </form>
+                    <p class="text-center text-slate-500 dark:text-[#93adc8] text-xs pt-2">© 2026, made with <span class="material-symbols-outlined text-red-500 align-middle text-sm" style="font-variation-settings: 'FILL' 1">favorite</span> by SOTM</p>
                 </div>
             </div>
         </aside>

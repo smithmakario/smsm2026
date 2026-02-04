@@ -92,6 +92,13 @@ class AuthenticatedSessionController extends Controller
         if (str_starts_with($name, 'mentee.')) {
             return 'mentee';
         }
+
+        // POST routes may have no name; resolve from URL path
+        $firstSegment = request()->segment(1);
+        if (in_array($firstSegment, ['admin', 'mentor', 'mentee'], true)) {
+            return $firstSegment;
+        }
+
         return 'admin';
     }
 

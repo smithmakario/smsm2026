@@ -13,16 +13,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+        $users = [
             [
+                'email' => 'admin@example.com',
                 'first_name' => 'Admin',
                 'last_name' => 'User',
-                'email' => 'admin@example.com',
                 'phone' => null,
                 'user_type' => User::TYPE_ADMIN,
                 'password' => Hash::make('password'),
-            ]
-        );
+            ],
+            [
+                'email' => 'mentor@example.com',
+                'first_name' => 'Mentor',
+                'last_name' => 'User',
+                'phone' => null,
+                'user_type' => User::TYPE_MENTOR,
+                'password' => Hash::make('password'),
+            ],
+            [
+                'email' => 'mentee@example.com',
+                'first_name' => 'Mentee',
+                'last_name' => 'User',
+                'phone' => null,
+                'user_type' => User::TYPE_MENTEE,
+                'password' => Hash::make('password'),
+            ],
+        ];
+
+        foreach ($users as $userData) {
+            User::firstOrCreate(
+                ['email' => $userData['email']],
+                $userData
+            );
+        }
     }
 }

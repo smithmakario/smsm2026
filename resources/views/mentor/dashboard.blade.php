@@ -1,29 +1,62 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Mentor Dashboard</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="font-sans text-gray-900 antialiased bg-gray-100">
-    <div class="min-h-screen">
-        <nav class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-            <h1 class="text-xl font-semibold">Mentor Dashboard</h1>
-            <div class="flex items-center gap-4">
-                <span class="text-sm text-gray-600">{{ auth()->user()?->full_name ?? 'Mentor' }}</span>
-                <form action="{{ route('mentor.logout') }}" method="POST" class="inline">
-                    @csrf
-                    <button type="submit" class="text-sm text-gray-600 hover:text-gray-900 underline">Sign Out</button>
-                </form>
-            </div>
-        </nav>
-        <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-600">Welcome, {{ auth()->user()?->full_name ?? 'Mentor' }}. This is your mentor dashboard.</p>
-            </div>
-        </main>
+@extends('layouts.mentor')
+
+@section('title', 'Mentor Collaboration Hub')
+
+@section('content')
+<!-- Summary Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+    <div class="flex flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#344d65] bg-white dark:bg-[#1a2632] shadow-sm">
+        <div class="flex justify-between items-start">
+            <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">My Cohorts</p>
+            <span class="material-symbols-outlined text-primary">groups</span>
+        </div>
+        <p class="text-slate-900 dark:text-white text-3xl font-bold">{{ $cohorts->count() }}</p>
+        <a href="{{ route('mentor.cohorts') }}" class="text-primary text-xs font-bold hover:underline mt-2">View all cohorts →</a>
     </div>
-</body>
-</html>
+    <div class="flex flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#344d65] bg-white dark:bg-[#1a2632] shadow-sm">
+        <div class="flex justify-between items-start">
+            <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Pending Reviews</p>
+            <span class="material-symbols-outlined text-primary">pending_actions</span>
+        </div>
+        <p class="text-slate-900 dark:text-white text-3xl font-bold">–</p>
+        <p class="text-slate-400 text-xs font-normal mt-2"><span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span></p>
+    </div>
+    <div class="flex flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#344d65] bg-white dark:bg-[#1a2632] shadow-sm">
+        <div class="flex justify-between items-start">
+            <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Avg. Response Time</p>
+            <span class="material-symbols-outlined text-primary">speed</span>
+        </div>
+        <p class="text-slate-900 dark:text-white text-3xl font-bold">–</p>
+        <p class="text-slate-400 text-xs font-normal mt-2"><span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span></p>
+    </div>
+</div>
+
+@if($cohorts->isNotEmpty())
+<!-- My Cohorts Quick Links -->
+<div class="px-6 mb-4">
+    <h3 class="text-slate-900 dark:text-white font-bold mb-3">My Cohorts</h3>
+    <div class="flex flex-wrap gap-3">
+        @foreach($cohorts as $cohort)
+            <a href="{{ route('mentor.cohorts.show', $cohort) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-[#344d65] hover:border-primary/50 transition-all text-sm font-medium text-slate-900 dark:text-white">
+                <span class="material-symbols-outlined text-primary text-lg">groups</span>
+                {{ $cohort->name }} ({{ $cohort->members->count() }} mentees)
+            </a>
+        @endforeach
+    </div>
+</div>
+@endif
+
+<!-- Assignment Queue -->
+<div class="p-6">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-slate-900 dark:text-white text-xl font-bold">Assignment Queue</h2>
+        <span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span>
+    </div>
+    <div class="bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-[#344d65] rounded-xl p-8 text-center">
+        <span class="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-500 mb-3">assignment</span>
+        <p class="text-slate-500 dark:text-[#93adc8] text-sm">Assignment submissions and grading</p>
+        <p class="text-slate-500 dark:text-[#93adc8] text-xs mt-1">This feature will show pending reviews and allow you to grade mentee work.</p>
+        <a href="{{ route('mentor.assignments') }}" class="inline-block mt-4 text-primary text-sm font-bold hover:underline">Go to Assignments →</a>
+    </div>
+</div>
+@endsection

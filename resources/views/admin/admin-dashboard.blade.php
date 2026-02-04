@@ -44,172 +44,76 @@
         <div class="p-8 max-w-7xl mx-auto w-full flex flex-col gap-8">
             <!-- Stats Row -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
+                <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
                     <div class="flex justify-between items-start">
                         <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Total Engagement</p>
                         <span class="material-symbols-outlined text-primary">analytics</span>
                     </div>
-                    <p class="text-3xl font-bold tracking-tight">84.2k</p>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="flex items-center text-emerald-500 text-sm font-semibold">
-                            <span class="material-symbols-outlined text-sm">trending_up</span> 12%
-                        </span>
-                        <span class="text-slate-400 text-xs font-normal">vs last month</span>
-                    </div>
+                    <p class="text-3xl font-bold tracking-tight">–</p>
+                    <p class="text-slate-400 text-xs font-normal mt-2"><span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span></p>
                 </div>
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
+                <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
                     <div class="flex justify-between items-start">
                         <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Active Users</p>
                         <span class="material-symbols-outlined text-primary">person_check</span>
                     </div>
-                    <p class="text-3xl font-bold tracking-tight">1,240</p>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="flex items-center text-emerald-500 text-sm font-semibold">
-                            <span class="material-symbols-outlined text-sm">trending_up</span> 5%
-                        </span>
-                        <span class="text-slate-400 text-xs font-normal">vs last month</span>
-                    </div>
+                    <p class="text-3xl font-bold tracking-tight">{{ $adminCount + $mentorCount + $menteeCount }}</p>
+                    <p class="text-slate-400 text-xs font-normal mt-2">Total registered users</p>
                 </div>
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
+                <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
                     <div class="flex justify-between items-start">
                         <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Avg. Completion</p>
                         <span class="material-symbols-outlined text-primary">task_alt</span>
                     </div>
-                    <p class="text-3xl font-bold tracking-tight">76.5%</p>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="flex items-center text-red-500 text-sm font-semibold">
-                            <span class="material-symbols-outlined text-sm">trending_down</span> 2%
-                        </span>
-                        <span class="text-slate-400 text-xs font-normal">vs last month</span>
-                    </div>
+                    <p class="text-3xl font-bold tracking-tight">–</p>
+                    <p class="text-slate-400 text-xs font-normal mt-2"><span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span></p>
                 </div>
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
+                <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
                     <div class="flex justify-between items-start">
                         <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Active Mentors</p>
                         <span class="material-symbols-outlined text-primary">school</span>
                     </div>
-                    <p class="text-3xl font-bold tracking-tight">142</p>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="flex items-center text-emerald-500 text-sm font-semibold">
-                            <span class="material-symbols-outlined text-sm">trending_up</span> 8%
-                        </span>
-                        <span class="text-slate-400 text-xs font-normal">vs last month</span>
-                    </div>
+                    <p class="text-3xl font-bold tracking-tight">{{ $mentorCount }}</p>
+                    <p class="text-slate-400 text-xs font-normal mt-2">{{ $menteeCount }} mentees</p>
                 </div>
             </div>
             <!-- Main Grid Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Left: Cohort Progress Table -->
-                <div
-                    class="lg:col-span-2 flex flex-col bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl overflow-hidden shadow-sm">
-                    <div
-                        class="px-6 py-5 border-b border-slate-100 dark:border-[#243647] flex justify-between items-center">
-                        <h3 class="font-bold text-lg">Cohort Progress Overview</h3>
-                        <button class="text-sm font-semibold text-primary hover:underline">View all</button>
+                <div class="lg:col-span-2 flex flex-col bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl overflow-hidden shadow-sm">
+                    <div class="px-6 py-5 border-b border-slate-100 dark:border-[#243647] flex justify-between items-center">
+                        <h3 class="font-bold text-lg">Cohort Overview</h3>
+                        <a href="{{ route('admin.cohorts.index') }}" class="text-sm font-semibold text-primary hover:underline">View all</a>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
                             <thead>
-                                <tr
-                                    class="bg-slate-50 dark:bg-[#1a2632] border-b border-slate-100 dark:border-[#243647]">
-                                    <th
-                                        class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">
-                                        Cohort Name</th>
-                                    <th
-                                        class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">
-                                        Start Date</th>
-                                    <th
-                                        class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">
-                                        Progress</th>
-                                    <th
-                                        class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">
-                                        Status</th>
+                                <tr class="bg-slate-50 dark:bg-[#1a2632] border-b border-slate-100 dark:border-[#243647]">
+                                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Cohort Name</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Mentor</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Members</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Progress</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-[#243647]">
-                                <tr class="hover:bg-slate-50/50 dark:hover:bg-[#1a2632]/50 transition-colors">
-                                    <td class="px-6 py-5 text-sm font-medium">Summer 2024 BootCamp</td>
-                                    <td class="px-6 py-5 text-sm text-slate-500 dark:text-[#93adc8]">June 15, 2024
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-[#344d65] overflow-hidden min-w-[100px]">
-                                                <div class="h-full bg-primary rounded-full" style="width: 85%">
-                                                </div>
-                                            </div>
-                                            <span class="text-sm font-bold">85%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <span
-                                            class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">ACTIVE</span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-slate-50/50 dark:hover:bg-[#1a2632]/50 transition-colors">
-                                    <td class="px-6 py-5 text-sm font-medium">Advanced UX Design</td>
-                                    <td class="px-6 py-5 text-sm text-slate-500 dark:text-[#93adc8]">July 01, 2024
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-[#344d65] overflow-hidden min-w-[100px]">
-                                                <div class="h-full bg-primary rounded-full" style="width: 42%">
-                                                </div>
-                                            </div>
-                                            <span class="text-sm font-bold">42%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <span
-                                            class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">ON
-                                            TRACK</span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-slate-50/50 dark:hover:bg-[#1a2632]/50 transition-colors">
-                                    <td class="px-6 py-5 text-sm font-medium">Data Science Intro</td>
-                                    <td class="px-6 py-5 text-sm text-slate-500 dark:text-[#93adc8]">Aug 10, 2024
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-[#344d65] overflow-hidden min-w-[100px]">
-                                                <div class="h-full bg-orange-500 rounded-full" style="width: 15%">
-                                                </div>
-                                            </div>
-                                            <span class="text-sm font-bold">15%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <span
-                                            class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400">AT
-                                            RISK</span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-slate-50/50 dark:hover:bg-[#1a2632]/50 transition-colors">
-                                    <td class="px-6 py-5 text-sm font-medium">Web Dev Masters</td>
-                                    <td class="px-6 py-5 text-sm text-slate-500 dark:text-[#93adc8]">May 20, 2024
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-[#344d65] overflow-hidden min-w-[100px]">
-                                                <div class="h-full bg-primary rounded-full" style="width: 98%">
-                                                </div>
-                                            </div>
-                                            <span class="text-sm font-bold">98%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5">
-                                        <span
-                                            class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-500/10 dark:text-slate-400">NEAR
-                                            END</span>
-                                    </td>
-                                </tr>
+                                @forelse($cohorts as $cohort)
+                                    <tr class="hover:bg-slate-50/50 dark:hover:bg-[#1a2632]/50 transition-colors">
+                                        <td class="px-6 py-5 text-sm font-medium">
+                                            <a href="{{ route('admin.cohorts.show', $cohort) }}" class="text-primary hover:underline">{{ $cohort->name }}</a>
+                                        </td>
+                                        <td class="px-6 py-5 text-sm text-slate-500 dark:text-[#93adc8]">{{ $cohort->mentor?->full_name ?? '–' }}</td>
+                                        <td class="px-6 py-5 text-sm font-medium">{{ $cohort->members_count }}</td>
+                                        <td class="px-6 py-5">
+                                            <span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-12 text-center text-slate-500 dark:text-[#93adc8]">
+                                            No cohorts yet. <a href="{{ route('admin.cohorts.create') }}" class="text-primary hover:underline">Create a cohort</a>.
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -217,153 +121,55 @@
                 <!-- Right: RBAC & Audit Log Summary -->
                 <div class="flex flex-col gap-6">
                     <!-- Role Summary -->
-                    <div
-                        class="bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl p-6 shadow-sm">
+                    <div class="bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl p-6 shadow-sm">
                         <h3 class="font-bold mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">security</span>
                             User Roles
                         </h3>
                         <div class="flex flex-col gap-4">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm text-slate-600 dark:text-[#93adc8]">System Admins</span>
-                                <span class="text-sm font-bold">12</span>
+                                <span class="text-sm text-slate-600 dark:text-[#93adc8]">Admins</span>
+                                <span class="text-sm font-bold">{{ $adminCount }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-slate-600 dark:text-[#93adc8]">Mentors</span>
-                                <span class="text-sm font-bold">142</span>
+                                <span class="text-sm font-bold">{{ $mentorCount }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-slate-600 dark:text-[#93adc8]">Mentees</span>
-                                <span class="text-sm font-bold">1,086</span>
+                                <span class="text-sm font-bold">{{ $menteeCount }}</span>
                             </div>
                             <div class="pt-4 mt-2 border-t border-slate-100 dark:border-[#243647]">
-                                <button
-                                    class="w-full text-center text-sm font-bold text-primary py-1.5 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">Manage
-                                    Permissions</button>
+                                <a href="{{ route('admin.users.index') }}" class="block w-full text-center text-sm font-bold text-primary py-1.5 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">Manage Users</a>
                             </div>
                         </div>
                     </div>
                     <!-- Audit Log Recent -->
-                    <div
-                        class="bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl p-6 shadow-sm flex-1">
+                    <div class="bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl p-6 shadow-sm flex-1">
                         <h3 class="font-bold mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">list_alt</span>
                             Recent Activity
                         </h3>
-                        <div class="flex flex-col gap-4">
-                            <div class="flex gap-3">
-                                <div
-                                    class="size-8 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-sm text-blue-500">add</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <p class="text-xs font-semibold leading-tight">Admin Alex created 'Summer 2024'
-                                    </p>
-                                    <p class="text-[10px] text-slate-400 dark:text-[#93adc8] mt-0.5">2 minutes ago
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div
-                                    class="size-8 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-sm text-emerald-500">login</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <p class="text-xs font-semibold leading-tight">System: Backup successful</p>
-                                    <p class="text-[10px] text-slate-400 dark:text-[#93adc8] mt-0.5">1 hour ago</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div
-                                    class="size-8 rounded-full bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-sm text-orange-500">lock_reset</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <p class="text-xs font-semibold leading-tight">Mentor Sara reset password</p>
-                                    <p class="text-[10px] text-slate-400 dark:text-[#93adc8] mt-0.5">3 hours ago
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div
-                                    class="size-8 rounded-full bg-slate-50 dark:bg-[#243647] flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-sm text-slate-400">edit</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <p class="text-xs font-semibold leading-tight">Updated RBAC Policy v2.1</p>
-                                    <p class="text-[10px] text-slate-400 dark:text-[#93adc8] mt-0.5">Yesterday</p>
-                                </div>
-                            </div>
+                        <div class="flex flex-col items-center justify-center py-8 text-center">
+                            <span class="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-500 mb-3">history</span>
+                            <p class="text-sm text-slate-500 dark:text-[#93adc8]">Activity tracking</p>
+                            <span class="mt-2 px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span>
+                            <a href="{{ route('admin.logs') }}" class="mt-4 text-xs font-bold text-primary hover:underline">View Audit Logs</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Engagement Chart Placeholder (Styled Div) -->
-            <div
-                class="bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl p-8 shadow-sm">
+            <!-- Engagement Chart Placeholder -->
+            <div class="bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl p-8 shadow-sm">
                 <div class="flex justify-between items-center mb-8">
                     <div>
                         <h3 class="font-bold text-lg leading-tight">Weekly User Engagement</h3>
-                        <p class="text-sm text-slate-500 dark:text-[#93adc8]">Real-time sessions and activity
-                            tracking</p>
+                        <p class="text-sm text-slate-500 dark:text-[#93adc8]">Real-time sessions and activity tracking</p>
                     </div>
-                    <div class="flex gap-2">
-                        <span
-                            class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg cursor-pointer">Last
-                            7 Days</span>
-                        <span
-                            class="px-3 py-1 hover:bg-slate-100 dark:hover:bg-[#243647] text-slate-500 text-xs font-bold rounded-lg cursor-pointer transition-colors">Last
-                            Month</span>
-                    </div>
+                    <span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span>
                 </div>
-                <div
-                    class="h-64 w-full flex items-end justify-between gap-4 px-4 border-b border-l border-slate-100 dark:border-[#243647]">
-                    <!-- Abstract "Chart" Bars -->
-                    <div
-                        class="w-full bg-primary/20 rounded-t h-[40%] hover:bg-primary transition-colors cursor-pointer group relative">
-                        <div
-                            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            12k</div>
-                    </div>
-                    <div
-                        class="w-full bg-primary/20 rounded-t h-[65%] hover:bg-primary transition-colors cursor-pointer group relative">
-                        <div
-                            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            18k</div>
-                    </div>
-                    <div
-                        class="w-full bg-primary/20 rounded-t h-[55%] hover:bg-primary transition-colors cursor-pointer group relative">
-                        <div
-                            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            15k</div>
-                    </div>
-                    <div class="w-full bg-primary rounded-t h-[90%] group relative cursor-pointer">
-                        <div
-                            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            24k</div>
-                    </div>
-                    <div
-                        class="w-full bg-primary/20 rounded-t h-[75%] hover:bg-primary transition-colors cursor-pointer group relative">
-                        <div
-                            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            21k</div>
-                    </div>
-                    <div
-                        class="w-full bg-primary/20 rounded-t h-[60%] hover:bg-primary transition-colors cursor-pointer group relative">
-                        <div
-                            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            16k</div>
-                    </div>
-                    <div
-                        class="w-full bg-primary/20 rounded-t h-[80%] hover:bg-primary transition-colors cursor-pointer group relative">
-                        <div
-                            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            22k</div>
-                    </div>
-                </div>
-                <div
-                    class="flex justify-between mt-4 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                <div class="h-64 w-full flex items-center justify-center rounded-lg bg-slate-50 dark:bg-[#1c2836] border border-dashed border-slate-200 dark:border-[#344d65]">
+                    <p class="text-slate-500 dark:text-[#93adc8] text-sm">Engagement charts will appear here</p>
                 </div>
             </div>
         </div>

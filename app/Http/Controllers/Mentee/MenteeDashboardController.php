@@ -9,6 +9,6 @@ class MenteeDashboardController extends Controller
 {
     public function __invoke(Request $request)
     {
-        return view('mentee.dashboard');
+        return view('mentee.dashboard', ['activeNav' => 'dashboard', 'activeSidebar' => 'home']);
     }
 }
