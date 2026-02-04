@@ -30,8 +30,8 @@
                 <div class="h-8 w-px bg-slate-200 dark:border-[#243647]"></div>
                 <div class="flex items-center gap-3 pl-2">
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-semibold leading-none">Alex Rivera</p>
-                        <p class="text-[10px] text-slate-500 dark:text-[#93adc8] mt-1">Super Admin</p>
+                        <p class="text-sm font-semibold leading-none">{{ auth()->user()?->full_name ?? 'Admin' }}</p>
+                        <p class="text-[10px] text-slate-500 dark:text-[#93adc8] mt-1">{{ ucfirst(auth()->user()?->user_type ?? 'Admin') }}</p>
                     </div>
                     <div class="h-10 w-10 rounded-full bg-slate-200 dark:bg-[#243647] border-2 border-white dark:border-[#243647] bg-cover bg-center"
                         data-alt="Admin user avatar"

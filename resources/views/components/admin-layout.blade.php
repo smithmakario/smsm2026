@@ -95,6 +95,11 @@
                             <span class="material-symbols-outlined">settings</span>
                             <span class="text-sm font-medium">Settings</span>
                         </a>
+                        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#1a2632] transition-colors"
+                            href="{{ route('admin.users.create') }}">
+                            <span class="material-symbols-outlined">person_add</span>
+                            <span class="text-sm font-medium">Create User</span>
+                        </a>
                     </nav>
                 </div>
                 <div class="mt-auto pt-6 flex flex-col gap-4 border-t border-slate-200 dark:border-[#243647]">
@@ -102,7 +107,7 @@
                         class="flex w-full items-center justify-center rounded-lg bg-primary h-10 px-4 text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
                         <span class="truncate">Generate Report</span>
                     </button>
-                    <form action="{{ route('logout') }}" method="POST">@csrf
+                    <form action="{{ route('admin.logout') }}" method="POST">@csrf
                         <button
                             class="flex w-full items-center justify-center rounded-lg bg-secondary h-10 px-4 text-black text-sm font-bold shadow-lg shadow-secondary/20 hover:bg-secondary/90 transition-all">
                             <span class="truncate">Sign Out</span>

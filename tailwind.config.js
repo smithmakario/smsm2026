@@ -20,12 +20,13 @@ export default {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                primary: "#308ce8",
+                primary: "#0A2E5C",
+                accent: "#D4AF37",
                 "background-light": "#f6f7f8",
-                "background-dark": "#111921",
+                "background-dark": "#111121",
             },
             fontFamily: {
-                display: ["Lexend"],
+                display: ["Inter", "sans-serif"],
             },
             borderRadius: {
                 DEFAULT: "0.25rem",

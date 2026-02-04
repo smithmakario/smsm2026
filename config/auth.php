@@ -37,14 +37,6 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
-        'staff' => [
-            'driver' => 'session',
-            'provider' => 'staffs',
-        ],
     ],
 
     /*
@@ -68,18 +60,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\AdminUser::class,
-        ],
-        'staffs' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\StaffUser::class,
-        ],
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -103,18 +83,6 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'password_reset_tokens',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-        'admins' => [
-            'provider' => 'admins',
-            'table' => 'password_reset_tokens',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-        'staffs' => [
-            'provider' => 'staffs',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
