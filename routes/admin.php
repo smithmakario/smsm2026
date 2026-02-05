@@ -27,7 +27,9 @@ Route::middleware(['auth', 'user.type:admin'])->group(function () {
     Route::delete('cohorts/{cohort}/members/{user}', [CohortsController::class, 'removeMember'])->name('admin.cohorts.members.remove');
     Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('admin.users.create');
+    Route::get('users/upload', [UserController::class, 'upload'])->name('admin.users.upload');
     Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::post('users/upload', [UserController::class, 'storeUpload'])->name('admin.users.storeUpload');
     Route::get('users/{user}', [UserController::class, 'show'])->name('admin.users.show');
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
