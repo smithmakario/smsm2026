@@ -10,6 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -82,7 +84,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'phone' => ['nullable', 'string', 'max:50'],
             'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_MENTOR . ',' . User::TYPE_MENTEE],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'marital_status' => ['nullable', 'string', 'in:' . implode(',', array_keys(config('onboarding.marital_statuses', [])))],
             'occupation' => ['nullable', 'string', 'max:255'],
             'occupation_category' => ['nullable', 'string', 'in:' . implode(',', array_keys(config('onboarding.occupation_categories', [])))],
@@ -98,7 +100,7 @@ class UserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'user_type' => $request->user_type,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make(Str::random(8)),
             'marital_status' => $request->marital_status,
             'occupation' => $request->occupation,
             'occupation_category' => $request->occupation_category,
@@ -108,6 +110,7 @@ class UserController extends Controller
             'city' => $request->city,
         ]);
 
+        Password::sendResetLink($user->only('email'));
         Mail::to($user->email)->send(new WelcomeRegistered($user));
 
         return redirect()
