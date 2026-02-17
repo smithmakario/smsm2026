@@ -1,13 +1,13 @@
 <x-admin-layout>
     <main class="flex-1 flex flex-col overflow-y-auto">
-        <header class="flex items-center justify-between sticky top-0 z-10 bg-white/80 dark:bg-[#111a22]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#243647] px-8 py-3">
+        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between sticky top-0 z-10 bg-white/80 dark:bg-[#111a22]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#243647] px-4 sm:px-8 py-3 pl-16 sm:pl-8 gap-3">
             <h2 class="text-lg font-bold tracking-tight">Cohort Management</h2>
-            <a href="{{ route('admin.cohorts.create') }}" class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+            <a href="{{ route('admin.cohorts.create') }}" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
                 <span class="material-symbols-outlined text-lg">add</span>
                 Create New Cohort
             </a>
         </header>
-        <div class="p-8 max-w-[1600px] mx-auto w-full flex flex-col gap-8">
+        <div class="p-4 sm:p-8 max-w-[1600px] mx-auto w-full flex flex-col gap-6 sm:gap-8">
             @if (session('status'))
                 <div class="rounded-lg bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-4 py-3 text-sm">
                     {{ session('status') }}
@@ -34,21 +34,62 @@
                 </div>
                 <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
                     <div class="flex justify-between items-start">
-                        <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Assigned Mentors</p>
+                        <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Assigned Coordinators</p>
                         <div class="p-2 bg-orange-500/10 rounded-lg">
                             <span class="material-symbols-outlined text-orange-500">badge</span>
                         </div>
                     </div>
-                    <p class="text-3xl font-bold tracking-tight">{{ \App\Models\Cohort::whereNotNull('mentor_id')->distinct('mentor_id')->count('mentor_id') }}</p>
+                    <p class="text-3xl font-bold tracking-tight">{{ \App\Models\Cohort::whereNotNull('coordinator_id')->distinct('coordinator_id')->count('coordinator_id') }}</p>
                 </div>
             </div>
-            <div class="bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl overflow-hidden shadow-sm">
+            <div class="space-y-3 md:hidden">
+                @forelse($cohorts as $cohort)
+                    <article class="rounded-xl border border-slate-200 dark:border-[#344d65] bg-white dark:bg-[#111a22] p-4 shadow-sm">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <a href="{{ route('admin.cohorts.show', $cohort) }}" class="text-sm font-bold text-primary hover:underline break-words">{{ $cohort->name }}</a>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-[#93adc8]">
+                                    Coordinator:
+                                    <span class="text-slate-700 dark:text-slate-200">{{ $cohort->coordinator?->full_name ?? '–' }}</span>
+                                </p>
+                            </div>
+                            <span class="inline-flex items-center justify-center rounded-lg bg-slate-100 dark:bg-[#1a2632] px-2.5 py-1 text-xs font-bold text-slate-700 dark:text-slate-200 shrink-0">
+                                {{ $cohort->members->count() }} members
+                            </span>
+                        </div>
+
+                        <p class="mt-3 text-xs text-slate-500 dark:text-[#93adc8]">
+                            Meeting:
+                            <span class="text-slate-700 dark:text-slate-200">{{ $cohort->meeting_time?->format('M j, Y g:i A') ?? '–' }}</span>
+                        </p>
+
+                        <div class="mt-3 pt-3 border-t border-slate-100 dark:border-[#243647] flex items-center justify-end gap-2">
+                            <a href="{{ route('admin.cohorts.show', $cohort) }}" class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-slate-100 dark:bg-[#243647] text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors">
+                                View & Edit
+                            </a>
+                            <form action="{{ route('admin.cohorts.destroy', $cohort) }}" method="POST" class="inline" onsubmit="return confirm('Delete this cohort?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                @empty
+                    <div class="rounded-xl border border-slate-200 dark:border-[#344d65] bg-white dark:bg-[#111a22] p-6 text-center text-slate-500 dark:text-[#93adc8]">
+                        No cohorts yet. <a href="{{ route('admin.cohorts.create') }}" class="text-primary hover:underline">Create your first cohort</a>.
+                    </div>
+                @endforelse
+            </div>
+
+            <div class="hidden md:block bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] rounded-xl overflow-hidden shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="bg-slate-50 dark:bg-[#1a2632] border-b border-slate-100 dark:border-[#243647]">
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Cohort Name</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Mentor</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Coordinator</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Meeting Time</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Members</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider text-right">Actions</th>
@@ -61,7 +102,7 @@
                                         <a href="{{ route('admin.cohorts.show', $cohort) }}" class="text-sm font-bold text-primary hover:underline">{{ $cohort->name }}</a>
                                     </td>
                                     <td class="px-6 py-5 text-sm">
-                                        {{ $cohort->mentor?->full_name ?? '–' }}
+                                        {{ $cohort->coordinator?->full_name ?? '–' }}
                                     </td>
                                     <td class="px-6 py-5 text-xs text-slate-500 dark:text-[#93adc8]">
                                         {{ $cohort->meeting_time?->format('M j, Y g:i A') ?? '–' }}
@@ -99,6 +140,13 @@
                     </div>
                 @endif
             </div>
+            @if($cohorts->hasPages())
+                <div class="md:hidden rounded-xl border border-slate-200 dark:border-[#243647] bg-white dark:bg-[#111a22] px-4 py-3">
+                    <div class="flex justify-center">
+                        {{ $cohorts->links() }}
+                    </div>
+                </div>
+            @endif
         </div>
     </main>
 </x-admin-layout>

@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <title>@yield('title', 'Mentor Collaboration Hub')</title>
+    <title>@yield('title', 'Coordinator Collaboration Hub')</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -37,12 +37,12 @@
 <!-- Top Navigation Bar -->
 <header class="flex items-center justify-between whitespace-nowrap border-b border-[#344d65] bg-background-light dark:bg-background-dark px-6 py-3 sticky top-0 z-50">
     <div class="flex items-center gap-8">
-        <button id="mentor-sidebar-open" type="button" class="lg:hidden inline-flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#243647] text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Open sidebar">
+        <button id="coordinator-sidebar-open" type="button" class="lg:hidden inline-flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#243647] text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Open sidebar">
             <span class="material-symbols-outlined">menu</span>
         </button>
-        <a href="{{ route('mentor.index') }}" class="flex items-center gap-3 text-primary">
+        <a href="{{ route('coordinator.index') }}" class="flex items-center gap-3 text-primary">
             <img src="{{ asset('images/sotm-logo.png') }}" alt="SOTM" class="h-8 w-auto object-contain" />
-            <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">MentorHub</h2>
+            <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">CoordinatorHub</h2>
         </a>
         <label class="hidden md:flex flex-col min-w-40 h-10 max-w-md">
             <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
@@ -55,10 +55,10 @@
     </div>
     <div class="flex flex-1 justify-end gap-4">
         <div class="flex gap-2">
-            <a href="{{ route('mentor.index') }}" class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#243647] text-slate-600 dark:text-white hover:bg-primary/20 transition-colors">
+            <a href="{{ route('coordinator.index') }}" class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#243647] text-slate-600 dark:text-white hover:bg-primary/20 transition-colors">
                 <span class="material-symbols-outlined">notifications</span>
             </a>
-            <a href="{{ route('mentor.messages') }}" class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#243647] text-slate-600 dark:text-white hover:bg-primary/20 transition-colors">
+            <a href="{{ route('coordinator.messages') }}" class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#243647] text-slate-600 dark:text-white hover:bg-primary/20 transition-colors">
                 <span class="material-symbols-outlined">chat_bubble</span>
             </a>
         </div>
@@ -67,10 +67,10 @@
             </summary>
             <div class="absolute right-0 mt-2 w-48 rounded-lg bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-[#344d65] shadow-xl z-50">
                 <div class="p-3 border-b border-slate-200 dark:border-[#344d65]">
-                    <p class="text-slate-900 dark:text-white text-sm font-bold truncate">{{ auth()->user()?->full_name ?? 'Mentor' }}</p>
+                    <p class="text-slate-900 dark:text-white text-sm font-bold truncate">{{ auth()->user()?->full_name ?? 'Coordinator' }}</p>
                     <p class="text-slate-500 dark:text-[#93adc8] text-xs truncate">{{ auth()->user()?->email ?? '' }}</p>
                 </div>
-                <form action="{{ route('mentor.logout') }}" method="POST">
+                <form action="{{ route('coordinator.logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="w-full flex items-center gap-2 px-4 py-2.5 text-left text-sm text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647] transition-colors rounded-b-lg">
                         <span class="material-symbols-outlined text-lg">logout</span> Sign Out
@@ -82,48 +82,48 @@
 </header>
 
 <div class="flex flex-1 overflow-hidden">
-    <div id="mentor-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" aria-hidden="true"></div>
+    <div id="coordinator-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" aria-hidden="true"></div>
     <!-- Side Navigation -->
-    <aside id="mentor-sidebar"
+    <aside id="coordinator-sidebar"
         class="fixed inset-y-0 left-0 z-50 w-64 border-r border-[#344d65] bg-background-light dark:bg-background-dark flex flex-col p-4 gap-6 shrink-0 transform -translate-x-full transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:translate-x-0 lg:flex">
         <div class="flex items-center justify-between lg:hidden mb-1">
             <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">Navigation</p>
-            <button id="mentor-sidebar-close" type="button" class="inline-flex items-center justify-center rounded-lg h-9 w-9 bg-slate-100 dark:bg-[#243647] text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Close sidebar">
+            <button id="coordinator-sidebar-close" type="button" class="inline-flex items-center justify-center rounded-lg h-9 w-9 bg-slate-100 dark:bg-[#243647] text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Close sidebar">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
         <div class="flex flex-col gap-2">
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'dashboard' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.index') }}">
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'dashboard' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('coordinator.index') }}">
                 <span class="material-symbols-outlined">dashboard</span>
                 <p class="text-sm font-medium">Dashboard</p>
             </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'cohorts' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.cohorts') }}">
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'cohorts' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('coordinator.cohorts') }}">
                 <span class="material-symbols-outlined">groups</span>
                 <p class="text-sm font-medium">Cohorts</p>
             </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'events' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.events.index') }}">
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'events' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('coordinator.events.index') }}">
                 <span class="material-symbols-outlined">event</span>
                 <p class="text-sm font-medium">Events</p>
             </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'assignments' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.assignments') }}">
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'assignments' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('coordinator.assignments') }}">
                 <span class="material-symbols-outlined">assignment</span>
                 <p class="text-sm font-medium">Assignments</p>
             </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'resources' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.resources') }}">
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'resources' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('coordinator.resources') }}">
                 <span class="material-symbols-outlined">library_books</span>
                 <p class="text-sm font-medium">Resources</p>
             </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'analytics' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.analytics') }}">
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'analytics' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('coordinator.analytics') }}">
                 <span class="material-symbols-outlined">monitoring</span>
                 <p class="text-sm font-medium">Analytics</p>
             </a>
         </div>
         <div class="mt-auto flex flex-col gap-2">
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'settings' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.settings') }}">
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'settings' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('coordinator.settings') }}">
                 <span class="material-symbols-outlined">settings</span>
                 <p class="text-sm font-medium">Settings</p>
             </a>
-            <form action="{{ route('mentor.logout') }}" method="POST">
+            <form action="{{ route('coordinator.logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer text-left">
                     <span class="material-symbols-outlined">logout</span>
@@ -142,7 +142,7 @@
     @hasSection('sidebar')
         @yield('sidebar')
     @else
-        @include('mentor.partials.sidebar-default')
+        @include('coordinator.partials.sidebar-default')
     @endif
 </div>
 <footer class="border-t border-[#344d65] bg-background-light dark:bg-background-dark py-4 px-6">
@@ -150,10 +150,10 @@
 </footer>
 <script>
     (() => {
-        const openBtn = document.getElementById('mentor-sidebar-open');
-        const closeBtn = document.getElementById('mentor-sidebar-close');
-        const sidebar = document.getElementById('mentor-sidebar');
-        const overlay = document.getElementById('mentor-sidebar-overlay');
+        const openBtn = document.getElementById('coordinator-sidebar-open');
+        const closeBtn = document.getElementById('coordinator-sidebar-close');
+        const sidebar = document.getElementById('coordinator-sidebar');
+        const overlay = document.getElementById('coordinator-sidebar-overlay');
 
         if (!openBtn || !closeBtn || !sidebar || !overlay) return;
 
