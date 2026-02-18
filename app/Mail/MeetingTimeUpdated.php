@@ -17,9 +17,9 @@ class MeetingTimeUpdated extends Mailable
     public function __construct(
         public User $recipient,
         public Cohort $cohort,
-        public bool $isMentor = false
+        public bool $isCoordinator = false
     ) {
-        $this->cohort->load(['mentor', 'members']);
+        $this->cohort->load(['coordinator', 'members']);
     }
 
     public function envelope(): Envelope

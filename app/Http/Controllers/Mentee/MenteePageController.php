@@ -26,7 +26,7 @@ class MenteePageController extends Controller
     {
         $cohort = auth()->user()?->cohort();
         if ($cohort) {
-            $cohort->load(['mentor', 'members']);
+            $cohort->load(['coordinator', 'members']);
         }
 
         return view('mentee.cohort', ['activeNav' => null, 'activeSidebar' => 'cohort', 'cohort' => $cohort]);

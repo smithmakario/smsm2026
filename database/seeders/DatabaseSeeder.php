@@ -23,11 +23,11 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
             ],
             [
-                'email' => 'mentor@example.com',
-                'first_name' => 'Mentor',
+                'email' => 'coordinator@example.com',
+                'first_name' => 'Coordinator',
                 'last_name' => 'User',
                 'phone' => null,
-                'user_type' => User::TYPE_MENTOR,
+                'user_type' => User::TYPE_COORDINATOR,
                 'password' => Hash::make('password'),
             ],
             [

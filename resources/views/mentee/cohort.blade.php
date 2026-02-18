@@ -30,19 +30,19 @@
                 </ul>
             </div>
             <div>
-                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">Assigned Mentor</h4>
-                @if($cohort->mentor)
+                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">Assigned Coordinator</h4>
+                @if($cohort->coordinator)
                     <div class="flex items-center gap-3 mb-4">
                         <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-primary">school</span>
                         </div>
                         <div>
-                            <span class="text-sm font-bold text-slate-900 dark:text-white">{{ $cohort->mentor->full_name }}</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 block">{{ $cohort->mentor->email }}</span>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white">{{ $cohort->coordinator->full_name }}</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block">{{ $cohort->coordinator->email }}</span>
                         </div>
                     </div>
                 @else
-                    <p class="text-slate-500 dark:text-slate-400 text-sm">No mentor assigned yet.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">No coordinator assigned yet.</p>
                 @endif
                 <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 mt-4">Meeting Details</h4>
                 @if($cohort->meeting_time)

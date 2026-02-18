@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GuestEventRegistrationController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,6 @@ Route::get('/', function () {
     }
     return view('welcome');
 });
+
+Route::get('/events/{event}/register', [GuestEventRegistrationController::class, 'create'])->name('events.guest.register');
+Route::post('/events/{event}/register', [GuestEventRegistrationController::class, 'store'])->name('events.guest.store');

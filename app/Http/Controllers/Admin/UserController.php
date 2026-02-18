@@ -45,7 +45,7 @@ class UserController extends Controller
         return view('admin.users.create', [
             'userTypes' => [
                 User::TYPE_ADMIN => 'Admin',
-                User::TYPE_MENTOR => 'Mentor',
+                User::TYPE_COORDINATOR => 'Coordinator',
                 User::TYPE_MENTEE => 'Mentee',
             ],
             'maritalStatuses' => config('onboarding.marital_statuses', []),
@@ -62,7 +62,7 @@ class UserController extends Controller
         return view('admin.users.upload', [
             'userTypes' => [
                 User::TYPE_ADMIN => 'Admin',
-                User::TYPE_MENTOR => 'Mentor',
+                User::TYPE_COORDINATOR => 'Coordinator',
                 User::TYPE_MENTEE => 'Mentee',
             ],
             'maritalStatuses' => config('onboarding.marital_statuses', []),
@@ -81,7 +81,7 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'phone' => ['nullable', 'string', 'max:50'],
-            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_MENTOR . ',' . User::TYPE_MENTEE],
+            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_COORDINATOR . ',' . User::TYPE_MENTEE],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'marital_status' => ['nullable', 'string', 'in:' . implode(',', array_keys(config('onboarding.marital_statuses', [])))],
             'occupation' => ['nullable', 'string', 'max:255'],
@@ -145,7 +145,7 @@ class UserController extends Controller
             'user' => $user,
             'userTypes' => [
                 User::TYPE_ADMIN => 'Admin',
-                User::TYPE_MENTOR => 'Mentor',
+                User::TYPE_COORDINATOR => 'Coordinator',
                 User::TYPE_MENTEE => 'Mentee',
             ],
             'maritalStatuses' => config('onboarding.marital_statuses', []),
@@ -164,7 +164,7 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class . ',email,' . $user->id],
             'phone' => ['nullable', 'string', 'max:50'],
-            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_MENTOR . ',' . User::TYPE_MENTEE],
+            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_COORDINATOR . ',' . User::TYPE_MENTEE],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'marital_status' => ['nullable', 'string', 'in:' . implode(',', array_keys(config('onboarding.marital_statuses', [])))],
             'occupation' => ['nullable', 'string', 'max:255'],

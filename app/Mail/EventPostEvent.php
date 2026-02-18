@@ -2,29 +2,29 @@
 
 namespace App\Mail;
 
-use App\Models\Cohort;
-use App\Models\User;
+use App\Models\Event;
+use App\Models\EventRegistration;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MentorAssignedToCohort extends Mailable
+class EventPostEvent extends Mailable
 {
     use Queueable, SerializesModels;
 
     public function __construct(
-        public User $mentor,
-        public Cohort $cohort
+        public Event $event,
+        public EventRegistration $registration
     ) {
-        $this->cohort->load(['mentor', 'members']);
+        $this->event->loadMissing('creator');
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'You\'ve been assigned to cohort: ' . $this->cohort->name,
+            subject: 'Thank you for attending: ' . $this->event->title,
             replyTo: [config('mail.from.address')],
         );
     }
@@ -32,8 +32,11 @@ class MentorAssignedToCohort extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.mentor-assigned-to-cohort',
-            with: ['emailType' => 'Cohort Assignment', 'subject' => 'You\'ve been assigned to cohort: ' . $this->cohort->name],
+            view: 'emails.event-post-event',
+            with: [
+                'emailType' => 'Event Follow-up',
+                'subject' => 'Thank you for attending: ' . $this->event->title,
+            ],
         );
     }
 }

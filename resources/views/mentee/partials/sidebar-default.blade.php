@@ -1,17 +1,17 @@
 @php
     $menteeCohort = auth()->user()?->cohort();
 @endphp
-{{-- Mentor Card --}}
+{{-- Coordinator Card --}}
 <div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-xl p-6">
-    <h3 class="text-slate-900 dark:text-white font-bold text-sm mb-4">Assigned Mentor</h3>
-    @if($menteeCohort?->mentor)
+    <h3 class="text-slate-900 dark:text-white font-bold text-sm mb-4">Assigned Coordinator</h3>
+    @if($menteeCohort?->coordinator)
         <div class="flex items-center gap-4">
             <div class="size-14 rounded-full bg-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
                 <span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-2xl">person</span>
             </div>
             <div class="flex flex-col min-w-0">
-                <span class="text-slate-900 dark:text-white font-bold text-base">{{ $menteeCohort->mentor->full_name }}</span>
-                <span class="text-slate-500 dark:text-slate-400 text-xs">{{ $menteeCohort->mentor->email }}</span>
+                <span class="text-slate-900 dark:text-white font-bold text-base">{{ $menteeCohort->coordinator->full_name }}</span>
+                <span class="text-slate-500 dark:text-slate-400 text-xs">{{ $menteeCohort->coordinator->email }}</span>
                 <a href="{{ route('mentee.messages') }}" class="mt-2 text-primary text-xs font-bold flex items-center gap-1 hover:underline">
                     <span class="material-symbols-outlined text-sm">chat_bubble</span> Send Message
                 </a>
@@ -33,7 +33,7 @@
             </div>
         @endif
     @else
-        <p class="text-slate-500 dark:text-slate-400 text-sm">No mentor assigned yet.</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">No coordinator assigned yet.</p>
     @endif
 </div>
 

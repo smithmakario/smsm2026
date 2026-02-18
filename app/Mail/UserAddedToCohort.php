@@ -18,7 +18,7 @@ class UserAddedToCohort extends Mailable
         public User $user,
         public Cohort $cohort
     ) {
-        $this->cohort->load(['mentor', 'members']);
+        $this->cohort->load(['coordinator', 'members']);
     }
 
     public function envelope(): Envelope

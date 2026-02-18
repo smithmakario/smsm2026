@@ -37,7 +37,7 @@
                             @php
                                 $typeColors = [
                                     \App\Models\User::TYPE_ADMIN => 'bg-primary/20 text-primary',
-                                    \App\Models\User::TYPE_MENTOR => 'bg-purple-500/20 text-purple-400',
+                                    \App\Models\User::TYPE_COORDINATOR => 'bg-purple-500/20 text-purple-400',
                                     \App\Models\User::TYPE_MENTEE => 'bg-slate-200 dark:bg-[#344d65] text-slate-600 dark:text-slate-300',
                                 ];
                             @endphp

@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cohort extends Model
 {
     protected $fillable = [
         'name',
-        'mentor_id',
+        'coordinator_id',
         'meeting_time',
         'meeting_link',
     ];
@@ -19,9 +20,9 @@ class Cohort extends Model
         'meeting_time' => 'datetime',
     ];
 
-    public function mentor(): BelongsTo
+    public function coordinator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'mentor_id');
+        return $this->belongsTo(User::class, 'coordinator_id');
     }
 
     public function members(): BelongsToMany
@@ -33,5 +34,15 @@ class Cohort extends Model
     public function mentees(): BelongsToMany
     {
         return $this->members()->where('user_type', User::TYPE_MENTEE);
+    }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(CohortAttendance::class);
+    }
+
+    public function reviewMeetings(): HasMany
+    {
+        return $this->hasMany(ReviewMeeting::class);
     }
 }
