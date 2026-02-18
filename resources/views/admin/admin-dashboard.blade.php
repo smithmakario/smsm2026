@@ -57,7 +57,7 @@
                         <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Active Users</p>
                         <span class="material-symbols-outlined text-primary">person_check</span>
                     </div>
-                    <p class="text-3xl font-bold tracking-tight">{{ $adminCount + $mentorCount + $menteeCount }}</p>
+                    <p class="text-3xl font-bold tracking-tight">{{ $adminCount + $coordinatorCount + $menteeCount }}</p>
                     <p class="text-slate-400 text-xs font-normal mt-2">Total registered users</p>
                 </div>
                 <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
@@ -70,10 +70,10 @@
                 </div>
                 <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-[#111a22] border border-slate-200 dark:border-[#344d65] shadow-sm">
                     <div class="flex justify-between items-start">
-                        <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Active Mentors</p>
+                        <p class="text-slate-500 dark:text-[#93adc8] text-sm font-medium">Active Coordinators</p>
                         <span class="material-symbols-outlined text-primary">school</span>
                     </div>
-                    <p class="text-3xl font-bold tracking-tight">{{ $mentorCount }}</p>
+                    <p class="text-3xl font-bold tracking-tight">{{ $coordinatorCount }}</p>
                     <p class="text-slate-400 text-xs font-normal mt-2">{{ $menteeCount }} mentees</p>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                                         <td class="px-6 py-5 text-sm font-medium">
                                             <a href="{{ route('admin.cohorts.show', $cohort) }}" class="text-primary hover:underline">{{ $cohort->name }}</a>
                                         </td>
-                                        <td class="px-6 py-5 text-sm text-slate-500 dark:text-[#93adc8]">{{ $cohort->mentor?->full_name ?? '–' }}</td>
+                                        <td class="px-6 py-5 text-sm text-slate-500 dark:text-[#93adc8]">{{ $cohort->coordinator?->full_name ?? '–' }}</td>
                                         <td class="px-6 py-5 text-sm font-medium">{{ $cohort->members_count }}</td>
                                         <td class="px-6 py-5">
                                             <span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">Coming soon</span>
@@ -132,8 +132,8 @@
                                 <span class="text-sm font-bold">{{ $adminCount }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-sm text-slate-600 dark:text-[#93adc8]">Mentors</span>
-                                <span class="text-sm font-bold">{{ $mentorCount }}</span>
+                                <span class="text-sm text-slate-600 dark:text-[#93adc8]">Coordinators</span>
+                                <span class="text-sm font-bold">{{ $coordinatorCount }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-slate-600 dark:text-[#93adc8]">Mentees</span>

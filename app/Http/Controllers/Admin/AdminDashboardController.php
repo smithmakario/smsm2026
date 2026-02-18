@@ -13,10 +13,10 @@ class AdminDashboardController extends Controller
     public function __invoke(Request $request): View
     {
         $adminCount = User::where('user_type', User::TYPE_ADMIN)->count();
-        $mentorCount = User::where('user_type', User::TYPE_MENTOR)->count();
+        $coordinatorCount = User::where('user_type', User::TYPE_COORDINATOR)->count();
         $menteeCount = User::where('user_type', User::TYPE_MENTEE)->count();
-        $cohorts = Cohort::with('mentor')->withCount('members')->orderBy('name')->take(5)->get();
+        $cohorts = Cohort::with('coordinator')->withCount('members')->orderBy('name')->take(5)->get();
 
-        return view('admin.admin-dashboard', compact('adminCount', 'mentorCount', 'menteeCount', 'cohorts'));
+        return view('admin.admin-dashboard', compact('adminCount', 'coordinatorCount', 'menteeCount', 'cohorts'));
     }
 }

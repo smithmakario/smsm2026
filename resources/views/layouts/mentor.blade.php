@@ -37,6 +37,9 @@
 <!-- Top Navigation Bar -->
 <header class="flex items-center justify-between whitespace-nowrap border-b border-[#344d65] bg-background-light dark:bg-background-dark px-6 py-3 sticky top-0 z-50">
     <div class="flex items-center gap-8">
+        <button id="mentor-sidebar-open" type="button" class="lg:hidden inline-flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#243647] text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Open sidebar">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
         <a href="{{ route('mentor.index') }}" class="flex items-center gap-3 text-primary">
             <img src="{{ asset('images/sotm-logo.png') }}" alt="SOTM" class="h-8 w-auto object-contain" />
             <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">MentorHub</h2>
@@ -79,8 +82,16 @@
 </header>
 
 <div class="flex flex-1 overflow-hidden">
+    <div id="mentor-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" aria-hidden="true"></div>
     <!-- Side Navigation -->
-    <aside class="w-64 border-r border-[#344d65] bg-background-light dark:bg-background-dark hidden lg:flex flex-col p-4 gap-6 shrink-0">
+    <aside id="mentor-sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 border-r border-[#344d65] bg-background-light dark:bg-background-dark flex flex-col p-4 gap-6 shrink-0 transform -translate-x-full transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:translate-x-0 lg:flex">
+        <div class="flex items-center justify-between lg:hidden mb-1">
+            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">Navigation</p>
+            <button id="mentor-sidebar-close" type="button" class="inline-flex items-center justify-center rounded-lg h-9 w-9 bg-slate-100 dark:bg-[#243647] text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Close sidebar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
         <div class="flex flex-col gap-2">
             <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'dashboard' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.index') }}">
                 <span class="material-symbols-outlined">dashboard</span>
@@ -89,6 +100,10 @@
             <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'cohorts' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.cohorts') }}">
                 <span class="material-symbols-outlined">groups</span>
                 <p class="text-sm font-medium">Cohorts</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'events' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.events.index') }}">
+                <span class="material-symbols-outlined">event</span>
+                <p class="text-sm font-medium">Events</p>
             </a>
             <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ ($activeSidebar ?? '') === 'assignments' ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-[#93adc8] hover:bg-slate-100 dark:hover:bg-[#243647]' }}" href="{{ route('mentor.assignments') }}">
                 <span class="material-symbols-outlined">assignment</span>
@@ -133,5 +148,40 @@
 <footer class="border-t border-[#344d65] bg-background-light dark:bg-background-dark py-4 px-6">
     <p class="text-center text-slate-500 dark:text-[#93adc8] text-xs">© 2026, made with <span class="material-symbols-outlined text-red-500 align-middle text-sm inline-block" style="font-variation-settings: 'FILL' 1">favorite</span> by SOTM</p>
 </footer>
+<script>
+    (() => {
+        const openBtn = document.getElementById('mentor-sidebar-open');
+        const closeBtn = document.getElementById('mentor-sidebar-close');
+        const sidebar = document.getElementById('mentor-sidebar');
+        const overlay = document.getElementById('mentor-sidebar-overlay');
+
+        if (!openBtn || !closeBtn || !sidebar || !overlay) return;
+
+        const openSidebar = () => {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        };
+
+        const closeSidebar = () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        };
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                overlay.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+    })();
+</script>
 </body>
 </html>

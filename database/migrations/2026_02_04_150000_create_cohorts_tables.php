@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('cohorts', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('mentor_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('coordinator_id')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('meeting_time')->nullable();
             $table->string('meeting_link')->nullable();
             $table->timestamps();

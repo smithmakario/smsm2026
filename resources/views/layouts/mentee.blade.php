@@ -36,6 +36,9 @@
 <header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-4 md:px-10 py-3">
     <div class="max-w-[1440px] mx-auto flex items-center justify-between whitespace-nowrap">
         <div class="flex items-center gap-8">
+            <button id="mentee-sidebar-open" type="button" class="xl:hidden inline-flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-surface-dark text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Open sidebar">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
             <a href="{{ route('mentee.index') }}" class="flex items-center gap-3 text-primary">
                 <img src="{{ asset('images/sotm-logo.png') }}" alt="SOTM" class="h-8 w-auto object-contain" />
                 <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Mentee Portal</h2>
@@ -45,6 +48,7 @@
                 <a class="text-sm font-medium transition-colors {{ ($activeNav ?? '') === 'journey' ? 'text-primary border-b-2 border-primary py-1 font-bold' : 'text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white' }}" href="{{ route('mentee.journey') }}">My Journey</a>
                 <a class="text-sm font-medium transition-colors {{ ($activeNav ?? '') === 'messages' ? 'text-primary border-b-2 border-primary py-1 font-bold' : 'text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white' }}" href="{{ route('mentee.messages') }}">Messages</a>
                 <a class="text-sm font-medium transition-colors {{ ($activeNav ?? '') === 'resources' ? 'text-primary border-b-2 border-primary py-1 font-bold' : 'text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white' }}" href="{{ route('mentee.resources') }}">Resources</a>
+                <a class="text-sm font-medium transition-colors {{ ($activeNav ?? '') === 'events' ? 'text-primary border-b-2 border-primary py-1 font-bold' : 'text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white' }}" href="{{ route('mentee.events.index') }}">Events</a>
             </nav>
         </div>
         <div class="flex flex-1 justify-end gap-6 items-center">
@@ -81,8 +85,16 @@
 </header>
 
 <main class="max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-8 p-4 md:p-10">
+    <div id="mentee-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden xl:hidden" aria-hidden="true"></div>
     <!-- Left Sidebar: Navigation -->
-    <aside class="hidden xl:flex flex-col w-64 gap-6 shrink-0">
+    <aside id="mentee-sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-surface-dark p-5 overflow-y-auto transform -translate-x-full transition-transform duration-300 ease-in-out xl:static xl:z-auto xl:w-64 xl:bg-transparent xl:p-0 xl:overflow-visible xl:translate-x-0 xl:flex xl:flex-col xl:gap-6">
+        <div class="flex items-center justify-between xl:hidden mb-4">
+            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">Navigation</p>
+            <button id="mentee-sidebar-close" type="button" class="inline-flex items-center justify-center rounded-lg h-9 w-9 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-primary/20 transition-colors" aria-label="Close sidebar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
         <div class="bg-white dark:bg-surface-dark rounded-xl p-5 border border-slate-200 dark:border-slate-800">
             <div class="mb-6">
                 <h1 class="text-slate-900 dark:text-white text-base font-bold">{{ auth()->user()?->cohort()?->name ?? 'My Cohort' }}</h1>
@@ -143,5 +155,40 @@
 <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark/80 py-4 px-4 md:px-10">
     <p class="text-center text-slate-500 dark:text-[#93adc8] text-xs">© 2026, made with <span class="material-symbols-outlined text-red-500 align-middle text-sm inline-block" style="font-variation-settings: 'FILL' 1">favorite</span> by SOTM</p>
 </footer>
+<script>
+    (() => {
+        const openBtn = document.getElementById('mentee-sidebar-open');
+        const closeBtn = document.getElementById('mentee-sidebar-close');
+        const sidebar = document.getElementById('mentee-sidebar');
+        const overlay = document.getElementById('mentee-sidebar-overlay');
+
+        if (!openBtn || !closeBtn || !sidebar || !overlay) return;
+
+        const openSidebar = () => {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        };
+
+        const closeSidebar = () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        };
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1280) {
+                overlay.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+    })();
+</script>
 </body>
 </html>

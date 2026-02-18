@@ -17,7 +17,7 @@
 <tr>
     <td style="padding: 0 32px 24px;">
         <p style="margin: 0 0 8px; font-size: 24px; font-weight: 800; color: #1e293b; line-height: 1.2;">{{ $cohort->name }}</p>
-        <p style="margin: 0; font-size: 16px; color: #64748b; line-height: 1.6;">Welcome to your new cohort. We've matched you with a mentor who fits your goals.</p>
+        <p style="margin: 0; font-size: 16px; color: #64748b; line-height: 1.6;">Welcome to your new cohort. We've matched you with a coordinator who fits your goals.</p>
     </td>
 </tr>
 <!-- Chips / Quick Info -->
@@ -38,14 +38,14 @@
         </table>
     </td>
 </tr>
-@if($cohort->mentor)
-<!-- Section Header: Mentor -->
+@if($cohort->coordinator)
+<!-- Section Header: Coordinator -->
 <tr>
     <td style="padding: 32px 32px 12px;">
-        <p style="margin: 0; font-size: 20px; font-weight: 700; color: #1e293b; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">Meet your Mentor</p>
+        <p style="margin: 0; font-size: 20px; font-weight: 700; color: #1e293b; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">Meet your Coordinator</p>
     </td>
 </tr>
-<!-- Mentor Profile Card -->
+<!-- Coordinator Profile Card -->
 <tr>
     <td style="padding: 0 32px 24px;">
         <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
@@ -57,8 +57,8 @@
                                 <div style="width: 64px; height: 64px; background-color: #e2e8f0; border-radius: 50%;"></div>
                             </td>
                             <td>
-                                <p style="margin: 0 0 4px; font-size: 18px; font-weight: 700; color: #1e293b;">{{ $cohort->mentor->full_name }}</p>
-                                <p style="margin: 0; font-size: 14px; font-weight: 600; color: #308ce8; text-transform: uppercase; letter-spacing: 0.05em;">Mentor</p>
+                                <p style="margin: 0 0 4px; font-size: 18px; font-weight: 700; color: #1e293b;">{{ $cohort->coordinator->full_name }}</p>
+                                <p style="margin: 0; font-size: 14px; font-weight: 600; color: #308ce8; text-transform: uppercase; letter-spacing: 0.05em;">Coordinator</p>
                             </td>
                         </tr>
                     </table>

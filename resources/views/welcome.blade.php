@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Platform Multi-Role Login Portal</title>
+    <title>Segun Obadje School for Men - SMSM</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
@@ -107,7 +107,7 @@
                 </div>
                 <h3 class="text-2xl font-bold mb-3">Mentee Portal</h3>
                 <p class="text-slate-600 dark:text-slate-400 mb-8 flex-grow">
-                    Access your courses, track progress, and connect with mentors to accelerate your career growth.
+                    Access your courses, track progress, and connect with coordinators to accelerate your career growth.
                 </p>
                 <a href="{{ route('mentee.login') }}" class="w-full py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 group">
                     Login as Mentee
@@ -120,12 +120,12 @@
                 <div class="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-xl bg-primary/10 text-primary">
                     <span class="material-symbols-outlined">lightbulb</span>
                 </div>
-                <h3 class="text-2xl font-bold mb-3">Mentor Portal</h3>
+                <h3 class="text-2xl font-bold mb-3">Coordinator Portal</h3>
                 <p class="text-slate-600 dark:text-slate-400 mb-8 flex-grow">
                     Guide your cohorts, review assignments, and manage sessions. Empower the next generation.
                 </p>
-                <a href="{{ route('mentor.login') }}" class="w-full py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 group">
-                    Login as Mentor
+                <a href="{{ route('coordinator.login') }}" class="w-full py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 group">
+                    Login as Coordinator
                     <span class="material-symbols-outlined !text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </a>
             </div>

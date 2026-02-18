@@ -24,11 +24,11 @@
                 </div>
 
                 <div>
-                    <label for="mentor_id" class="block text-sm font-medium text-slate-700 dark:text-[#93adc8] mb-1">Mentor</label>
-                    <select id="mentor_id" name="mentor_id" class="w-full rounded-lg border-slate-300 dark:border-[#344d65] dark:bg-[#243647] dark:text-white focus:ring-primary focus:border-primary">
-                        <option value="">– Select Mentor –</option>
-                        @foreach($mentors as $m)
-                            <option value="{{ $m->id }}" {{ old('mentor_id') == $m->id ? 'selected' : '' }}>{{ $m->full_name }} ({{ $m->email }})</option>
+                    <label for="coordinator_id" class="block text-sm font-medium text-slate-700 dark:text-[#93adc8] mb-1">Coordinator</label>
+                    <select id="coordinator_id" name="coordinator_id" class="w-full rounded-lg border-slate-300 dark:border-[#344d65] dark:bg-[#243647] dark:text-white focus:ring-primary focus:border-primary">
+                        <option value="">– Select Coordinator –</option>
+                        @foreach($coordinators as $m)
+                            <option value="{{ $m->id }}" {{ old('coordinator_id') == $m->id ? 'selected' : '' }}>{{ $m->full_name }} ({{ $m->email }})</option>
                         @endforeach
                     </select>
                 </div>

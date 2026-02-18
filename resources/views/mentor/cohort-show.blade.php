@@ -39,6 +39,60 @@
         </form>
     </div>
 
+    {{-- Record attendance --}}
+    <div class="bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-[#344d65] rounded-xl p-6 mb-6 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4">Record attendance</h3>
+        <form method="POST" action="{{ route('mentor.cohorts.attendance.store', $cohort) }}" class="space-y-4">
+            @csrf
+            <div class="flex flex-wrap items-end gap-4 mb-4">
+                <div>
+                    <label for="week_number" class="block text-xs font-medium text-slate-500 dark:text-[#93adc8] mb-1">Week</label>
+                    <select id="week_number" name="week_number" required class="rounded-lg border-slate-300 dark:border-[#344d65] dark:bg-[#243647] dark:text-white text-sm focus:ring-primary focus:border-primary">
+                        @for ($w = 1; $w <= 10; $w++)
+                            <option value="{{ $w }}" {{ (int) old('week_number', 1) === $w ? 'selected' : '' }}>Week {{ $w }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-all">Save attendance</button>
+            </div>
+            @if($cohort->members->isNotEmpty())
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-[#243647]">
+                                <th class="pb-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#93adc8]">Mentee</th>
+                                <th class="pb-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#93adc8]">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-[#243647]">
+                            @foreach($cohort->members as $member)
+                                @php
+                                    $currentWeek = (int) old('week_number', 1);
+                                    $currentStatus = $attendanceByMember[$member->id][$currentWeek] ?? '';
+                                @endphp
+                                <tr>
+                                    <td class="py-2">
+                                        <span class="text-sm font-medium text-slate-900 dark:text-white">{{ $member->full_name }}</span>
+                                    </td>
+                                    <td class="py-2">
+                                        <select name="attendances[{{ $member->id }}]" class="rounded-lg border-slate-300 dark:border-[#344d65] dark:bg-[#243647] dark:text-white text-sm focus:ring-primary focus:border-primary min-w-[120px]">
+                                            <option value="none" {{ $currentStatus === '' ? 'selected' : '' }}>—</option>
+                                            <option value="present" {{ $currentStatus === 'present' ? 'selected' : '' }}>Present</option>
+                                            <option value="late" {{ $currentStatus === 'late' ? 'selected' : '' }}>Late</option>
+                                            <option value="absent" {{ $currentStatus === 'absent' ? 'selected' : '' }}>Absent</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="text-sm text-slate-500 dark:text-[#93adc8]">No members in this cohort. Add members from the admin cohort page to record attendance.</p>
+            @endif
+        </form>
+    </div>
+
     {{-- Members --}}
     <div class="bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-[#344d65] rounded-xl p-6 shadow-sm">
         <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4">Cohort Members</h3>

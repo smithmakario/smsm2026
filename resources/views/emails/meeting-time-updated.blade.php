@@ -47,8 +47,8 @@
         <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
                 <td align="center">
-                    @if($isMentor)
-                    <a href="{{ route('mentor.cohorts.show', $cohort) }}" style="display: inline-block; padding: 16px 32px; background-color: #308ce8; color: #ffffff !important; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px;">View cohort →</a>
+                    @if($isCoordinator)
+                    <a href="{{ route('coordinator.cohorts.show', $cohort) }}" style="display: inline-block; padding: 16px 32px; background-color: #308ce8; color: #ffffff !important; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px;">View cohort →</a>
                     @else
                     <a href="{{ route('mentee.index') }}" style="display: inline-block; padding: 16px 32px; background-color: #308ce8; color: #ffffff !important; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px;">View dashboard →</a>
                     @endif
@@ -57,7 +57,7 @@
             <tr>
                 <td align="center" style="padding-top: 16px;">
                     <p style="margin: 0; font-size: 12px; color: #94a3b8;">
-                        Button not working? Copy and paste: <u>@if($isMentor){{ route('mentor.cohorts.show', $cohort) }}@else{{ route('mentee.index') }}@endif</u>
+                        Button not working? Copy and paste: <u>@if($isCoordinator){{ route('coordinator.cohorts.show', $cohort) }}@else{{ route('mentee.index') }}@endif</u>
                     </p>
                 </td>
             </tr>

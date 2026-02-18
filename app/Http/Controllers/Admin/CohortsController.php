@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AtRiskCheckInReminder;
 use App\Mail\MeetingTimeUpdated;
-use App\Mail\MentorAssignedToCohort;
+use App\Mail\CoordinatorAssignedToCohort;
 use App\Mail\UserAddedToCohort;
 use App\Models\Cohort;
+use App\Models\CohortAttendance;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
@@ -17,24 +20,24 @@ class CohortsController extends Controller
 {
     public function index(): View
     {
-        $cohorts = Cohort::with(['mentor', 'members'])->orderBy('name')->paginate(15);
+        $cohorts = Cohort::with(['coordinator', 'members'])->orderBy('name')->paginate(15);
 
         return view('admin.cohorts.index', compact('cohorts'));
     }
 
     public function create(): View
     {
-        $mentors = User::where('user_type', User::TYPE_MENTOR)->orderBy('first_name')->get();
+        $coordinators = User::where('user_type', User::TYPE_COORDINATOR)->orderBy('first_name')->get();
         $mentees = User::where('user_type', User::TYPE_MENTEE)->orderBy('first_name')->get();
 
-        return view('admin.cohorts.create', compact('mentors', 'mentees'));
+        return view('admin.cohorts.create', compact('coordinators', 'mentees'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'mentor_id' => ['nullable', 'exists:users,id'],
+            'coordinator_id' => ['nullable', 'exists:users,id'],
             'meeting_time' => ['nullable', 'date'],
             'meeting_link' => ['nullable', 'string', 'max:500'],
             'members' => ['nullable', 'array'],
@@ -43,7 +46,7 @@ class CohortsController extends Controller
 
         $cohort = Cohort::create([
             'name' => $request->name,
-            'mentor_id' => $request->mentor_id ?: null,
+            'coordinator_id' => $request->coordinator_id ?: null,
             'meeting_time' => $request->meeting_time,
             'meeting_link' => $request->meeting_link,
         ]);
@@ -53,9 +56,9 @@ class CohortsController extends Controller
             $cohort->members()->sync($mentees);
         }
 
-        $cohort->load(['mentor', 'members']);
-        if ($cohort->mentor_id) {
-            Mail::to($cohort->mentor->email)->send(new MentorAssignedToCohort($cohort->mentor, $cohort));
+        $cohort->load(['coordinator', 'members']);
+        if ($cohort->coordinator_id) {
+            Mail::to($cohort->coordinator->email)->send(new CoordinatorAssignedToCohort($cohort->coordinator, $cohort));
         }
         foreach ($cohort->members as $member) {
             Mail::to($member->email)->send(new UserAddedToCohort($member, $cohort));
@@ -67,8 +70,8 @@ class CohortsController extends Controller
 
     public function show(Cohort $cohort): View
     {
-        $cohort->load(['mentor', 'members']);
-        $mentors = User::where('user_type', User::TYPE_MENTOR)->orderBy('first_name')->get();
+        $cohort->load(['coordinator', 'members']);
+        $coordinators = User::where('user_type', User::TYPE_COORDINATOR)->orderBy('first_name')->get();
         $availableMentees = User::where('user_type', User::TYPE_MENTEE)
             ->where(function ($q) use ($cohort) {
                 $q->whereDoesntHave('cohorts')
@@ -77,43 +80,115 @@ class CohortsController extends Controller
             ->orderBy('first_name')
             ->get();
 
-        return view('admin.cohorts.show', compact('cohort', 'mentors', 'availableMentees'));
+        $attendances = CohortAttendance::where('cohort_id', $cohort->id)->get();
+        $attendanceByMember = $attendances->groupBy('user_id')->map(
+            fn ($rows) => $rows->keyBy('week_number')->map(fn ($r) => $r->status)
+        );
+
+        $totalRecords = $attendances->count();
+        $presentOrLate = $attendances->whereIn('status', ['present', 'late'])->count();
+        $averageAttendance = $totalRecords > 0 ? round(($presentOrLate / $totalRecords) * 100) : null;
+
+        $maxWeek = $attendances->isEmpty() ? 0 : (int) $attendances->max('week_number');
+        $activeMenteeCount = 0;
+        if ($maxWeek >= 1) {
+            $lastTwoWeeks = $maxWeek >= 2 ? [$maxWeek, $maxWeek - 1] : [$maxWeek];
+            $activeMenteeCount = $attendances
+                ->whereIn('week_number', $lastTwoWeeks)
+                ->whereIn('status', ['present', 'late'])
+                ->pluck('user_id')
+                ->unique()
+                ->count();
+        }
+
+        $atRiskMembers = $this->computeAtRiskMembers($cohort, $attendances, $maxWeek);
+        $atRiskCount = $atRiskMembers->count();
+
+        return view('admin.cohorts.show', compact(
+            'cohort',
+            'coordinators',
+            'availableMentees',
+            'attendanceByMember',
+            'averageAttendance',
+            'activeMenteeCount',
+            'atRiskMembers',
+            'atRiskCount'
+        ));
+    }
+
+    /**
+     * @return Collection<int, array{user: User, reason: string}>
+     */
+    private function computeAtRiskMembers(Cohort $cohort, Collection $attendances, int $maxWeek): Collection
+    {
+        $memberIds = $cohort->members->pluck('id')->all();
+        $byUser = $attendances->groupBy('user_id');
+        $atRisk = collect();
+        foreach ($memberIds as $userId) {
+            $userRecords = $byUser->get($userId, collect());
+            if ($userRecords->isEmpty()) {
+                continue;
+            }
+            $user = $cohort->members->firstWhere('id', $userId);
+            if (! $user) {
+                continue;
+            }
+            $total = $userRecords->count();
+            $presentOrLate = $userRecords->whereIn('status', ['present', 'late'])->count();
+            $rate = $total > 0 ? $presentOrLate / $total : 0;
+            $lowAttendance = $rate < 0.6;
+            $missedLastTwo = false;
+            if ($maxWeek >= 2) {
+                $lastWeek = $userRecords->firstWhere('week_number', $maxWeek);
+                $prevWeek = $userRecords->firstWhere('week_number', $maxWeek - 1);
+                $lastStatus = $lastWeek ? $lastWeek->status : null;
+                $prevStatus = $prevWeek ? $prevWeek->status : null;
+                $missedLastTwo = in_array($lastStatus, ['absent', null], true) && in_array($prevStatus, ['absent', null], true);
+            }
+            if ($missedLastTwo) {
+                $atRisk->push(['user' => $user, 'reason' => 'Missed last 2 sessions']);
+            } elseif ($lowAttendance) {
+                $atRisk->push(['user' => $user, 'reason' => round($rate * 100) . '% Attendance']);
+            }
+        }
+
+        return $atRisk;
     }
 
     public function edit(Cohort $cohort): View
     {
-        $cohort->load(['mentor', 'members']);
-        $mentors = User::where('user_type', User::TYPE_MENTOR)->orderBy('first_name')->get();
+        $cohort->load(['coordinator', 'members']);
+        $coordinators = User::where('user_type', User::TYPE_COORDINATOR)->orderBy('first_name')->get();
         $mentees = User::where('user_type', User::TYPE_MENTEE)->orderBy('first_name')->get();
 
-        return view('admin.cohorts.edit', compact('cohort', 'mentors', 'mentees'));
+        return view('admin.cohorts.edit', compact('cohort', 'coordinators', 'mentees'));
     }
 
     public function update(Request $request, Cohort $cohort): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'mentor_id' => ['nullable', 'exists:users,id'],
+            'coordinator_id' => ['nullable', 'exists:users,id'],
             'meeting_time' => ['nullable', 'date'],
             'meeting_link' => ['nullable', 'string', 'max:500'],
             'members' => ['nullable', 'array'],
             'members.*' => ['exists:users,id'],
         ]);
 
-        $previousMentorId = $cohort->mentor_id;
+        $previousCoordinatorId = $cohort->coordinator_id;
         $previousMemberIds = $cohort->members()->pluck('users.id')->all();
         $meetingTimeChanged = $cohort->meeting_time?->format('Y-m-d H:i') !== ($request->meeting_time ? date('Y-m-d H:i', strtotime($request->meeting_time)) : null)
             || (string) $cohort->meeting_link !== (string) $request->meeting_link;
 
         $cohort->update([
             'name' => $request->name,
-            'mentor_id' => $request->mentor_id ?: null,
+            'coordinator_id' => $request->coordinator_id ?: null,
             'meeting_time' => $request->meeting_time,
             'meeting_link' => $request->meeting_link,
         ]);
 
-        if ($request->mentor_id && (int) $request->mentor_id !== (int) $previousMentorId && $cohort->mentor) {
-            Mail::to($cohort->mentor->email)->send(new MentorAssignedToCohort($cohort->mentor, $cohort->fresh(['members'])));
+        if ($request->coordinator_id && (int) $request->coordinator_id !== (int) $previousCoordinatorId && $cohort->coordinator) {
+            Mail::to($cohort->coordinator->email)->send(new CoordinatorAssignedToCohort($cohort->coordinator, $cohort->fresh(['members'])));
         }
 
         if ($request->has('members')) {
@@ -128,9 +203,9 @@ class CohortsController extends Controller
         }
 
         if ($meetingTimeChanged) {
-            $cohort->load(['mentor', 'members']);
-            if ($cohort->mentor_id) {
-                Mail::to($cohort->mentor->email)->send(new MeetingTimeUpdated($cohort->mentor, $cohort, true));
+            $cohort->load(['coordinator', 'members']);
+            if ($cohort->coordinator_id) {
+                Mail::to($cohort->coordinator->email)->send(new MeetingTimeUpdated($cohort->coordinator, $cohort, true));
             }
             foreach ($cohort->members as $member) {
                 Mail::to($member->email)->send(new MeetingTimeUpdated($member, $cohort, false));
@@ -161,7 +236,7 @@ class CohortsController extends Controller
 
         if (!$cohort->members()->where('user_id', $user->id)->exists()) {
             $cohort->members()->attach($user->id);
-            $cohort->load(['mentor', 'members']);
+            $cohort->load(['coordinator', 'members']);
             Mail::to($user->email)->send(new UserAddedToCohort($user, $cohort));
         }
 
@@ -173,5 +248,17 @@ class CohortsController extends Controller
         $cohort->members()->detach($user->id);
 
         return back()->with('status', 'Member removed successfully.');
+    }
+
+    public function sendAtRiskEmail(Cohort $cohort, User $user): RedirectResponse
+    {
+        if (! $cohort->members()->where('user_id', $user->id)->exists()) {
+            abort(403, 'User is not a member of this cohort.');
+        }
+
+        Mail::to($user->email)->send(new AtRiskCheckInReminder($user, $cohort));
+
+        return redirect()->route('admin.cohorts.show', $cohort)
+            ->with('status', 'Reminder sent to ' . $user->full_name . '.');
     }
 }

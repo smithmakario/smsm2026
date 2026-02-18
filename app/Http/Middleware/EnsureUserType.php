@@ -13,7 +13,7 @@ class EnsureUserType
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  string  ...$types  Allowed user types (admin, mentor, mentee).
+     * @param  string  ...$types  Allowed user types (admin, coordinator, mentee).
      */
     public function handle(Request $request, Closure $next, string ...$types): Response
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\UserImport;
 use App\Mail\WelcomeRegistered;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -23,7 +25,8 @@ class UserController extends Controller
 
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
+                $q
+                    ->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             });
@@ -42,7 +45,24 @@ class UserController extends Controller
         return view('admin.users.create', [
             'userTypes' => [
                 User::TYPE_ADMIN => 'Admin',
-                User::TYPE_MENTOR => 'Mentor',
+                User::TYPE_COORDINATOR => 'Coordinator',
+                User::TYPE_MENTEE => 'Mentee',
+            ],
+            'maritalStatuses' => config('onboarding.marital_statuses', []),
+            'occupationCategories' => config('onboarding.occupation_categories', []),
+            'nigerianStates' => config('onboarding.nigerian_states', []),
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new user (admin-only registration).
+     */
+    public function upload(): View
+    {
+        return view('admin.users.upload', [
+            'userTypes' => [
+                User::TYPE_ADMIN => 'Admin',
+                User::TYPE_COORDINATOR => 'Coordinator',
                 User::TYPE_MENTEE => 'Mentee',
             ],
             'maritalStatuses' => config('onboarding.marital_statuses', []),
@@ -61,7 +81,7 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'phone' => ['nullable', 'string', 'max:50'],
-            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_MENTOR . ',' . User::TYPE_MENTEE],
+            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_COORDINATOR . ',' . User::TYPE_MENTEE],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'marital_status' => ['nullable', 'string', 'in:' . implode(',', array_keys(config('onboarding.marital_statuses', [])))],
             'occupation' => ['nullable', 'string', 'max:255'],
@@ -90,8 +110,22 @@ class UserController extends Controller
 
         Mail::to($user->email)->send(new WelcomeRegistered($user));
 
-        return redirect()->route('admin.users.index')
+        return redirect()
+            ->route('admin.users.index')
             ->with('status', 'User created successfully.');
+    }
+
+    public function storeUpload(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'max:5120'],
+        ]);
+
+        Excel::import(new UserImport, $request->file);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('status', 'User uploaded successfully.');
     }
 
     /**
@@ -111,7 +145,7 @@ class UserController extends Controller
             'user' => $user,
             'userTypes' => [
                 User::TYPE_ADMIN => 'Admin',
-                User::TYPE_MENTOR => 'Mentor',
+                User::TYPE_COORDINATOR => 'Coordinator',
                 User::TYPE_MENTEE => 'Mentee',
             ],
             'maritalStatuses' => config('onboarding.marital_statuses', []),
@@ -130,7 +164,7 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class . ',email,' . $user->id],
             'phone' => ['nullable', 'string', 'max:50'],
-            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_MENTOR . ',' . User::TYPE_MENTEE],
+            'user_type' => ['required', 'string', 'in:' . User::TYPE_ADMIN . ',' . User::TYPE_COORDINATOR . ',' . User::TYPE_MENTEE],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'marital_status' => ['nullable', 'string', 'in:' . implode(',', array_keys(config('onboarding.marital_statuses', [])))],
             'occupation' => ['nullable', 'string', 'max:255'],
@@ -160,7 +194,8 @@ class UserController extends Controller
         }
         $user->update($data);
 
-        return redirect()->route('admin.users.index')
+        return redirect()
+            ->route('admin.users.index')
             ->with('status', 'User updated successfully.');
     }
 }

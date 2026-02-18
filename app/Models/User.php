@@ -4,6 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Cohort;
+use App\Models\CohortAttendance;
+use App\Models\Event;
+use App\Models\EventRegistration;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,7 +20,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     public const TYPE_ADMIN = 'admin';
-    public const TYPE_MENTOR = 'mentor';
+    public const TYPE_COORDINATOR = 'coordinator';
     public const TYPE_MENTEE = 'mentee';
 
     /**
@@ -74,9 +77,9 @@ class User extends Authenticatable
         return $this->user_type === self::TYPE_ADMIN;
     }
 
-    public function isMentor(): bool
+    public function isCoordinator(): bool
     {
-        return $this->user_type === self::TYPE_MENTOR;
+        return $this->user_type === self::TYPE_COORDINATOR;
     }
 
     public function isMentee(): bool
@@ -91,7 +94,7 @@ class User extends Authenticatable
     {
         return match ($this->user_type) {
             self::TYPE_ADMIN => 'admin.index',
-            self::TYPE_MENTOR => 'mentor.index',
+            self::TYPE_COORDINATOR => 'coordinator.index',
             self::TYPE_MENTEE => 'mentee.index',
             default => 'admin.index',
         };
@@ -108,8 +111,38 @@ class User extends Authenticatable
         return $this->cohorts()->first();
     }
 
-    public function mentoredCohorts(): HasMany
+    public function coordinatedCohorts(): HasMany
     {
-        return $this->hasMany(Cohort::class, 'mentor_id');
+        return $this->hasMany(Cohort::class, 'coordinator_id');
+    }
+
+    public function cohortAttendances(): HasMany
+    {
+        return $this->hasMany(CohortAttendance::class);
+    }
+
+    public function eventRegistrations(): HasMany
+    {
+        return $this->hasMany(EventRegistration::class);
+    }
+
+    public function createdEvents(): HasMany
+    {
+        return $this->hasMany(Event::class, 'created_by');
+    }
+
+    public function moduleReviews(): HasMany
+    {
+        return $this->hasMany(ModuleReview::class);
+    }
+
+    public function menteeSemesterProjects(): HasMany
+    {
+        return $this->hasMany(MenteeSemesterProject::class);
+    }
+
+    public function userSemesterPoints(): HasMany
+    {
+        return $this->hasMany(UserSemesterPoints::class);
     }
 }

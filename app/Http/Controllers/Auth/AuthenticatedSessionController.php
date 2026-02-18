@@ -13,7 +13,7 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view for the current area (admin, mentor, mentee).
+     * Display the login view for the current area (admin, coordinator, mentee).
      */
     public function create(Request $request): View
     {
@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
         $loginRoute = $routeName === 'login' ? 'login' : ($area . '.login');
         $title = match ($area) {
             'admin' => 'Admin Login',
-            'mentor' => 'Mentor Login',
+            'coordinator' => 'Coordinator Login',
             'mentee' => 'Mentee Login',
             default => 'Login',
         };
@@ -72,7 +72,7 @@ class AuthenticatedSessionController extends Controller
 
         $loginRoute = match ($request->route()?->getName()) {
             'admin.logout' => 'admin.login',
-            'mentor.logout' => 'mentor.login',
+            'coordinator.logout' => 'coordinator.login',
             'mentee.logout' => 'mentee.login',
             default => 'admin.login',
         };
@@ -86,8 +86,8 @@ class AuthenticatedSessionController extends Controller
         if (str_starts_with($name, 'admin.')) {
             return 'admin';
         }
-        if (str_starts_with($name, 'mentor.')) {
-            return 'mentor';
+        if (str_starts_with($name, 'coordinator.')) {
+            return 'coordinator';
         }
         if (str_starts_with($name, 'mentee.')) {
             return 'mentee';
@@ -95,7 +95,7 @@ class AuthenticatedSessionController extends Controller
 
         // POST routes may have no name; resolve from URL path
         $firstSegment = request()->segment(1);
-        if (in_array($firstSegment, ['admin', 'mentor', 'mentee'], true)) {
+        if (in_array($firstSegment, ['admin', 'coordinator', 'mentee'], true)) {
             return $firstSegment;
         }
 
@@ -106,6 +106,6 @@ class AuthenticatedSessionController extends Controller
     {
         $area = $this->resolveAreaFromRoute();
         return $area === 'admin' ? User::TYPE_ADMIN
-            : ($area === 'mentor' ? User::TYPE_MENTOR : User::TYPE_MENTEE);
+            : ($area === 'coordinator' ? User::TYPE_COORDINATOR : User::TYPE_MENTEE);
     }
 }
