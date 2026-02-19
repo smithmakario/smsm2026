@@ -16,8 +16,7 @@ class SemesterModulesController extends Controller
 {
     public function index(Semester $semester): View
     {
-        $semester->load('modules');
-        $modules = $semester->modules()->orderBy('week_number')->get();
+        $modules = $semester->modules()->with('activities')->orderBy('week_number')->get();
 
         return view('admin.semesters.modules.index', compact('semester', 'modules'));
     }
@@ -77,6 +76,14 @@ class SemesterModulesController extends Controller
             ],
             'life_application_questions' => ['nullable', 'array', 'max:100'],
             'life_application_questions.*' => ['nullable', 'string', 'max:2000'],
+            'activities' => ['nullable', 'array', 'max:100'],
+            'activities.*.title' => ['required', 'string', 'max:255'],
+            'activities.*.description' => ['nullable', 'string', 'max:2000'],
+            'activities.*.occurs_at' => [
+                'required',
+                'date',
+                $this->ensureDateWithinSelectedWeek($request, $weekWindows, 'Activity date/time'),
+            ],
         ]);
 
         $module = new Module([
@@ -108,6 +115,7 @@ class SemesterModulesController extends Controller
 
         $module->save();
         $this->syncLifeApplicationQuestions($module, $this->extractLifeApplicationQuestions($request));
+        $this->syncActivities($module, $this->extractActivities($request));
 
         return redirect()->route('admin.semesters.modules.index', $semester)
             ->with('status', 'Module created successfully.');
@@ -116,14 +124,17 @@ class SemesterModulesController extends Controller
     public function edit(Semester $semester, Module $module): View
     {
         abort_if($module->semester_id !== $semester->id, 404);
-        $module->load('lifeApplicationQuestions');
+        $module->load('lifeApplicationQuestions', 'activities');
+        $weekWindows = $this->buildWeekWindows($semester);
+        $moduleWeekWindow = $weekWindows[$module->week_number] ?? null;
 
-        return view('admin.semesters.modules.edit', compact('semester', 'module'));
+        return view('admin.semesters.modules.edit', compact('semester', 'module', 'moduleWeekWindow'));
     }
 
     public function update(Request $request, Semester $semester, Module $module): RedirectResponse
     {
         abort_if($module->semester_id !== $semester->id, 404);
+        $weekWindows = $this->buildWeekWindows($semester);
 
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -136,6 +147,14 @@ class SemesterModulesController extends Controller
             'scheduled_end_at' => ['nullable', 'date', 'required_with:scheduled_start_at', 'after:scheduled_start_at'],
             'life_application_questions' => ['nullable', 'array', 'max:100'],
             'life_application_questions.*' => ['nullable', 'string', 'max:2000'],
+            'activities' => ['nullable', 'array', 'max:100'],
+            'activities.*.title' => ['required', 'string', 'max:255'],
+            'activities.*.description' => ['nullable', 'string', 'max:2000'],
+            'activities.*.occurs_at' => [
+                'required',
+                'date',
+                $this->ensureDateWithinWeek($weekWindows, $module->week_number, 'Activity date/time'),
+            ],
         ]);
 
         $module->title = $request->title;
@@ -179,6 +198,7 @@ class SemesterModulesController extends Controller
         }
 
         $this->syncLifeApplicationQuestions($module, $this->extractLifeApplicationQuestions($request));
+        $this->syncActivities($module, $this->extractActivities($request));
         $module->save();
 
         return redirect()->route('admin.semesters.modules.index', $semester)
@@ -258,6 +278,27 @@ class SemesterModulesController extends Controller
         };
     }
 
+    private function ensureDateWithinWeek(array $weekWindows, int $weekNumber, string $fieldLabel): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) use ($weekWindows, $weekNumber, $fieldLabel): void {
+            if (empty($value) || ! isset($weekWindows[$weekNumber])) {
+                return;
+            }
+
+            try {
+                $valueDate = Carbon::parse((string) $value);
+            } catch (\Throwable) {
+                return;
+            }
+
+            $weekStart = $weekWindows[$weekNumber]['start'];
+            $weekEnd = $weekWindows[$weekNumber]['end'];
+            if ($valueDate->lt($weekStart) || $valueDate->gt($weekEnd)) {
+                $fail($fieldLabel . ' must be between ' . $weekStart->format('Y-m-d H:i') . ' and ' . $weekEnd->format('Y-m-d H:i') . ' for the selected week.');
+            }
+        };
+    }
+
     /**
      * @return list<string>
      */
@@ -284,6 +325,40 @@ class SemesterModulesController extends Controller
     }
 
     /**
+     * @return list<array{title: string, description: ?string, occurs_at: \Carbon\CarbonInterface}>
+     */
+    private function extractActivities(Request $request): array
+    {
+        $activities = $request->input('activities', []);
+        if (! is_array($activities)) {
+            return [];
+        }
+
+        $cleaned = [];
+        foreach ($activities as $activity) {
+            if (! is_array($activity)) {
+                continue;
+            }
+
+            $title = array_key_exists('title', $activity) ? trim((string) $activity['title']) : '';
+            $description = array_key_exists('description', $activity) ? trim((string) $activity['description']) : '';
+            $occursAtRaw = $activity['occurs_at'] ?? null;
+
+            if ($title === '' || ! is_string($occursAtRaw) || trim($occursAtRaw) === '') {
+                continue;
+            }
+
+            $cleaned[] = [
+                'title' => $title,
+                'description' => $description === '' ? null : $description,
+                'occurs_at' => now()->parse($occursAtRaw),
+            ];
+        }
+
+        return $cleaned;
+    }
+
+    /**
      * @param list<string> $questions
      */
     private function syncLifeApplicationQuestions(Module $module, array $questions): void
@@ -294,6 +369,22 @@ class SemesterModulesController extends Controller
                 'question' => $question,
                 'sort_order' => $index + 1,
                 'is_visible_to_mentee' => false,
+            ]);
+        }
+    }
+
+    /**
+     * @param list<array{title: string, description: ?string, occurs_at: \Carbon\CarbonInterface}> $activities
+     */
+    private function syncActivities(Module $module, array $activities): void
+    {
+        $module->activities()->delete();
+        foreach ($activities as $index => $activity) {
+            $module->activities()->create([
+                'title' => $activity['title'],
+                'description' => $activity['description'],
+                'occurs_at' => $activity['occurs_at'],
+                'sort_order' => $index + 1,
             ]);
         }
     }

@@ -24,6 +24,7 @@
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Week</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Title</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Content</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Activities</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Scheduled</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider">Published</th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-[#93adc8] uppercase tracking-wider text-right">Actions</th>
@@ -39,6 +40,22 @@
                                         @if($module->video_url) <span class="inline-block mr-2">Video</span> @endif
                                         @if($module->pdf_path) <span class="inline-block">PDF</span> @endif
                                         @if(!$module->audio_path && !$module->video_url && !$module->pdf_path) – @endif
+                                    </td>
+                                    <td class="px-6 py-5 text-xs text-slate-600 dark:text-[#93adc8]">
+                                        @php
+                                            $activitiesCount = $module->activities->count();
+                                            $nextActivity = $module->activities->sortBy('occurs_at')->first();
+                                        @endphp
+                                        @if($activitiesCount > 0)
+                                            <div>{{ $activitiesCount }} {{ \Illuminate\Support\Str::plural('activity', $activitiesCount) }}</div>
+                                            @if($nextActivity?->occurs_at)
+                                                <div class="mt-0.5 text-[11px] text-slate-500 dark:text-[#93adc8]">
+                                                    Next: {{ $nextActivity->occurs_at->format('D j M, g:i A') }}
+                                                </div>
+                                            @endif
+                                        @else
+                                            –
+                                        @endif
                                     </td>
                                     <td class="px-6 py-5 text-xs text-slate-600 dark:text-[#93adc8]">
                                         @if($module->scheduled_start_at && $module->scheduled_end_at)
@@ -75,7 +92,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center text-slate-500 dark:text-[#93adc8]">
+                                    <td colspan="7" class="px-6 py-12 text-center text-slate-500 dark:text-[#93adc8]">
                                         No modules yet. <a href="{{ route('admin.semesters.modules.create', $semester) }}" class="text-primary hover:underline">Add the first module</a>.
                                     </td>
                                 </tr>

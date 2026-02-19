@@ -44,6 +44,11 @@ class Module extends Model
         return $this->hasMany(ModuleLifeApplicationQuestion::class)->orderBy('sort_order');
     }
 
+    public function activities(): HasMany
+    {
+        return $this->hasMany(ModuleActivity::class)->orderBy('occurs_at');
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());
